@@ -5,12 +5,17 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 app.use(cors());
+app.use(express.json());
 
-const url = "https://www.theguardian.com/uk";
+app.post("/", (req, res) => {
+  const { parcel } = req.body;
 
-app.get("/", function (req, res) {
-  res.json("This is my webscraper");
+  if (!parcel) {
+    return res.status(400).send({ status: "failed" });
+  }
+  res.status(200).send({ status: "received" });
 });
+const url = parcel;
 
 app.get("/results", (req, res) => {
   axios(url)
@@ -33,4 +38,4 @@ app.get("/results", (req, res) => {
     .catch((err) => console.log(err));
 });
 
-app.listen(PORT, () => console.log(`server running on PORT ${PORT}`));
+app.listen(PORT, () => console.log(`server running`));
