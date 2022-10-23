@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [val, setVal] = useState("https://www.theguardian.com/uk");
+  const [valu, setValu] = useState();
   useEffect(() => {
     postInfo();
   }, []);
@@ -23,9 +24,9 @@ export default function Home() {
       .then((response) => {
         return response.json();
       })
-      .then((data) => console.log(data))
+      .then((data) => setValu(data)
       .catch((err) => console.log(err));
   }
 
-  return <></>;
+  return <>{valu}</>;
 }
