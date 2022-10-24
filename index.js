@@ -55,4 +55,4 @@ app.get("/results", (req, res) => {
   })();
 });
 
-app.listen(PORT, () => console.log(`Server running`));
+app.listen(`0.0.0.0:$PORT`, () => console.log(`Server running`));
