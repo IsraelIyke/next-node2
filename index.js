@@ -1,41 +1,58 @@
-const PORT = process.env.PORT || 8000;
-const axios = require("axios");
-const cheerio = require("cheerio");
+const PORT = 3001;
 const express = require("express");
-const app = express();
 const cors = require("cors");
+const axios = require("axios");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+
+const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/", (req, res) => {
-  const { parcel } = req.body;
-
-  if (!parcel) {
-    return res.status(400).send({ status: "failed" });
-  }
-  res.status(200).send({ status: "received" });
-});
-const url = parcel;
-
 app.get("/results", (req, res) => {
-  axios(url)
-    .then((response) => {
-      const html = response.data;
-      const $ = cheerio.load(html);
-      const articles = [];
+  const website = req.query.website;
+  const keyword = req.query.keyword;
+  puppeteer.use(StealthPlugin());
+  (async () => {
+    try {
+      const browser = await puppeteer.launch({ headless: true });
+      const page = await browser.newPage();
 
-      $(".fc-item__title", html).each(function () {
-        //<-- cannot be a function expression
-        const title = $(this).text();
-        const url = $(this).find("a").attr("href");
-        articles.push({
-          title,
-          url,
-        });
+      await page.goto(website, { timeout: 0 });
+
+      const grabParagraph = await page.evaluate(() => {
+        const pgTag = document.querySelector("body");
+        return pgTag.innerText;
       });
-      res.json(articles);
-    })
-    .catch((err) => console.log(err));
+
+      const boolTrueArray = [];
+      const boolFalseArray = [];
+      const lowKeyword = keyword.toLowerCase();
+
+      const lowGrabParagraph = grabParagraph.toLowerCase();
+      const myArray = lowKeyword.split(" ");
+      const newArray = myArray.map((element) => {
+        const bool = lowGrabParagraph.includes(element);
+        if (bool) {
+          boolTrueArray.push(bool);
+        } else {
+          boolFalseArray.push(bool);
+        }
+      });
+      let dbStatus = "";
+      if (boolTrueArray.length > 0 && boolFalseArray.length == 0) {
+        dbStatus = "Perfect";
+      } else if (boolTrueArray.length > 0 && boolFalseArray.length > 0) {
+        dbStatus = "Partial";
+      } else if (boolTrueArray.length == 0 && boolFalseArray.length > 0) {
+        dbStatus = "No";
+      }
+      res.json(dbStatus);
+      await browser.close();
+    } catch (e) {
+      console.log(`There is a problem here ${e}`);
+    }
+  })();
 });
 
-app.listen(PORT, () => console.log(`server running`));
+app.listen(PORT, () => console.log(`Server running`));

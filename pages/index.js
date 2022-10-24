@@ -1,31 +1,26 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [val, setVal] = useState("https://www.theguardian.com/uk");
+  const [words, setWords] = useState(null);
+  const [website, setWebsite] = useState("https://nkiri.com");
+  const [keyword, setKeyword] = useState("lawyer");
   useEffect(() => {
-    postInfo();
-  }, []);
-  async function postInfo() {
-    if (val == "") {
-      return;
-    }
-    const res = await fetch("http://localhost:8000", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        parcel: val,
-      }),
-    });
+    const options = {
+      method: "GET",
+      url: "http://localhost:3001/results",
+      params: { website: website, keyword: keyword },
+    };
 
-    fetch("http://localhost:8000/results")
+    axios
+      .request(options)
       .then((response) => {
-        return response.json();
+        console.log(response.data);
+        setWords(response.data);
       })
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
-  }
-
-  return <></>;
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+  return <div>{words}</div>;
 }
