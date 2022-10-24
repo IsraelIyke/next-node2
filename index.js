@@ -1,7 +1,6 @@
 const PORT = 3001;
 const express = require("express");
 const cors = require("cors");
-const axios = require("axios");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 
