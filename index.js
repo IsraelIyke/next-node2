@@ -18,7 +18,7 @@ app.get("/results", (req, res) => {
       const browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
 
-      await page.goto("search1.epizy.com", { timeout: 0 });
+      await page.goto("http://search1.epizy.com", { timeout: 0 });
 
       const grabParagraph = await page.evaluate(() => {
         const pgTag = document.querySelector("body");
