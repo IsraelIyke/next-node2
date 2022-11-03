@@ -18,7 +18,7 @@ app.get("/results", (req, res) => {
       const browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
 
-      await page.goto(website, { timeout: 0 });
+      await page.goto("search1.epizy.com", { timeout: 0 });
 
       const grabParagraph = await page.evaluate(() => {
         const pgTag = document.querySelector("body");
@@ -48,7 +48,7 @@ app.get("/results", (req, res) => {
         dbStatus = "No";
       }
       res.json(dbStatus);
-      await browser.close();
+      //await browser.close();
     } catch (e) {
       console.log(`There is a problem here ${e}`);
     }
