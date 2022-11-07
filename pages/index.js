@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [words, setWords] = useState(null);
-  const [website, setWebsite] = useState("https://nkiri.com");
-  const [keyword, setKeyword] = useState("lawyer");
+  const [website, setWebsite] = useState("http://search1.epizy.com");
+  const [keyword, setKeyword] = useState("hello");
   useEffect(() => {
     const options = {
       method: "GET",
