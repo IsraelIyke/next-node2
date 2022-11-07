@@ -45,7 +45,7 @@ app.get("/results", (req, res) => {
       res.json(dbStatus);
       setTimeout(async () => {
         await browser.close();
-      }, 10000);
+      }, 5000);
     } catch (e) {
       console.log(`There is a problem here ${e}`);
     }
